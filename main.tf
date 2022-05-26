@@ -8,12 +8,30 @@ terraform {
     }
   }
   required_providers {
+    tfe = {
+      source = "hashicorp/tfe"
+      # version = "0.31.0"
+    }
     thousandeyes = {
       source = "william20111/thousandeyes"
       # source = "cgascoig/cgascoig/thousandeyes"   # this is a custom build of the william20111/thousandeyes provider with a bug fixed (see https://github.com/william20111/terraform-provider-thousandeyes/issues/59)
       # version = "0.6.0"
     }
   }
+}
+
+### Terraform Cloud Provider ###
+provider "tfe" {
+  token = var.tfe_token
+}
+
+data "tfe_workspace_ids" "apps" {
+  tag_names    = ["thousandeyes_tests"]
+  organization = "mel-ciscolabs-com"
+}
+
+output "workspaces" {
+  value = data.tfe_workspace_ids.apps
 }
 
 provider "thousandeyes" {
